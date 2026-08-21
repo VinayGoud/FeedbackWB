@@ -1,0 +1,76 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+
+.feedbackWp {
+  padding: 16px;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  font-family: inherit;
+  
+  color: "[theme:bodyText, default: #323130]";
+  color: var(--bodyText);
+ 
+  &.teams {
+    font-family: $ms-font-family-fallbacks;
+  }
+}
+ 
+.prompt {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+ 
+.voteButtons {
+  display: flex;
+  gap: 8px;
+}
+ 
+.thumbButton {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+ 
+  &:hover:not(:disabled) {
+    background: #f3f3f3;
+  }
+ 
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+ 
+.commentBox {
+  width: 100%;
+  min-height: 60px;
+  margin-bottom: 8px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  resize: vertical;
+}
+ 
+.submitButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #d0021b; // 3M red accent, adjust to your design tokens
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+ 
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+ 
+.thankYou {
+  font-weight: 600;
+  color: #217346;
+}
+ 

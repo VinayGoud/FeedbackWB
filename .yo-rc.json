@@ -1,0 +1,18 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.11.0",
+    "sdksVersions": {},
+    "version": "1.21.1",
+    "libraryName": "feedback",
+    "libraryId": "032bd83d-e213-4cea-8200-40b531f57cfa",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "feedback",
+    "solutionShortDescription": "feedback description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

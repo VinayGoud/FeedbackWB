@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # feedback
 
 ## Summary
@@ -76,3 +77,7 @@ This extension illustrates the following concepts:
 # 3m-go-homepage
 3m-go-homepage SPFX project
 >>>>>>> 3e9a42817436d2db23b8e294ff3c93b3562fc79c
+=======
+# FeedbackWB
+homepage SPFX project
+>>>>>>> 7192b7b9a6d101d8bd77cb1b47f5c92098ec0845

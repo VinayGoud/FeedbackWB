@@ -1,76 +1,423 @@
-@import '~@fluentui/react/dist/sass/References.scss';
+ @import '~@fluentui/react/dist/sass/References.scss';
+// $feedback-red: #c8102e;
+// $feedback-dark: #1b2635;
+// $border-grey: #d9dce1;
+// $text-primary: #1b2635;
+// $text-muted: #6b7280;
+
+// .feedbackCard {
+//   position: relative;
+//   background: #ffffff;
+//   border-radius: 10px;
+//   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+//   padding: 16px 20px 16px 24px;
+//   margin-bottom: 16px;
+//   overflow: hidden;
+
+//   &::before {
+//     content: '';
+//     position: absolute;
+//     left: 0;
+//     top: 0;
+//     bottom: 0;
+//     width: 4px;
+//     background: $feedback-red;
+//   }
+// }
+
+// .headerRow {
+//   display: flex;
+//   align-items: center;
+//   gap: 12px;
+// }
+
+// .iconBadge {
+//   flex: 0 0 auto;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 32px;
+//   height: 32px;
+//   color: $feedback-red;
+// }
+
+// .questionText {
+//   flex: 1 1 auto;
+//   font-size: 14px;
+//   font-weight: 600;
+//   color: $text-primary;
+// }
+
+// .voteButtons {
+//   flex: 0 0 auto;
+//   display: flex;
+//   gap: 8px;
+// }
+
+// .voteBtn {
+//   display: inline-flex;
+//   align-items: center;
+//   gap: 6px;
+//   padding: 6px 14px;
+//   border-radius: 999px;
+//   border: 1px solid $border-grey;
+//   background: #ffffff;
+//   color: $text-primary;
+//   font-size: 13px;
+//   font-weight: 500;
+//   cursor: pointer;
+//   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+//   &:hover:not(:disabled) {
+//     border-color: $feedback-dark;
+//   }
+
+//   &:disabled {
+//     cursor: not-allowed;
+//     opacity: 0.6;
+//   }
+// }
+
+// .voteBtnSelected {
+//   background: $feedback-dark;
+//   border-color: $feedback-dark;
+//   color: #ffffff;
+// }
+
+// .commentSection {
+//   display: flex;
+//   align-items: flex-start;
+//   gap: 12px;
+//   margin-top: 14px;
+// }
+
+// .commentBox {
+//   flex: 1 1 auto;
+//   min-height: 64px;
+//   resize: vertical;
+//   padding: 10px 12px;
+//   border: 1px solid $border-grey;
+//   border-radius: 8px;
+//   font-size: 13px;
+//   font-family: inherit;
+//   color: $text-primary;
+
+//   &::placeholder {
+//     color: $text-muted;
+//   }
+
+//   &:focus {
+//     outline: none;
+//     border-color: $feedback-dark;
+//   }
+// }
+
+// .actionButtons {
+//   flex: 0 0 auto;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 8px;
+//   width: 160px;
+// }
+
+// .submitBtn {
+//   padding: 8px 0;
+//   border: none;
+//   border-radius: 999px;
+//   background: $feedback-red;
+//   color: #ffffff;
+//   font-size: 13px;
+//   font-weight: 600;
+//   cursor: pointer;
+
+//   &:hover:not(:disabled) {
+//     background: darken($feedback-red, 6%);
+//   }
+
+//   &:disabled {
+//     cursor: not-allowed;
+//     opacity: 0.7;
+//   }
+// }
+
+// .cancelBtn {
+//   padding: 8px 0;
+//   border: 1px solid $border-grey;
+//   border-radius: 999px;
+//   background: #ffffff;
+//   color: $text-primary;
+//   font-size: 13px;
+//   font-weight: 500;
+//   cursor: pointer;
+
+//   &:hover:not(:disabled) {
+//     border-color: $feedback-dark;
+//   }
+
+//   &:disabled {
+//     cursor: not-allowed;
+//     opacity: 0.7;
+//   }
+// }
+
+// .thankYouSection {
+//   display: flex;
+//   align-items: center;
+//   gap: 12px;
+//   margin-top: 4px;
+// }
+
+// .checkIcon {
+//   flex: 0 0 auto;
+// }
+
+// .thankYouTitle {
+//   font-size: 14px;
+//   font-weight: 600;
+//   color: $text-primary;
+// }
+
+// .thankYouSubtitle {
+//   font-size: 13px;
+//   color: $text-muted;
+//   margin-top: 2px;
+// }
+
+// .errorText {
+//   grid-column: 1 / -1;
+//   font-size: 12px;
+//   color: $feedback-red;
+//   margin-top: 6px;
+// }
 
 
-.feedbackWp {
-  padding: 16px;
-  border: 1px solid #e1e1e1;
-  border-radius: 4px;
-  font-family: inherit;
-  
-  color: "[theme:bodyText, default: #323130]";
-  color: var(--bodyText);
+$btn-primary-bg: #ff0000;
+$btn-primary-bg-hover: #c80000;
+$btn-primary-bg-disabled: #dddddd;
+$btn-primary-text: #ffffff;
+$btn-primary-text-disabled: #767676;
  
-  &.teams {
-    font-family: $ms-font-family-fallbacks;
+// Secondary Large (Yes/No selected)
+$btn-secondary-bg: #4b4b4b;
+$btn-secondary-bg-hover: #000000;
+$btn-secondary-bg-disabled: #dddddd;
+$btn-secondary-text: #ffffff;
+$btn-secondary-text-disabled: #767676;
+ 
+// Tertiary Large (Cancel, Yes/No unselected)
+$btn-tertiary-stroke: #4b4b4b;
+$btn-tertiary-stroke-disabled: #aeaeae;
+$btn-tertiary-bg: transparent;
+$btn-tertiary-bg-hover: #f2f2f2;
+$btn-tertiary-text: #4b4b4b;
+$btn-tertiary-text-disabled: #767676;
+ 
+// ---- Non-button tokens (unchanged) ----
+$border-grey: #d9dce1;
+$text-primary: #1b2635;
+$text-muted: #6b7280;
+ 
+.feedbackCard {
+  position: relative;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 16px 20px 16px 24px;
+  margin-bottom: 16px;
+  overflow: hidden;
+ 
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: $btn-primary-bg;
   }
 }
  
-.prompt {
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+ 
+.iconBadge {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: $btn-primary-bg;
+}
+ 
+.questionText {
+  flex: 1 1 auto;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 12px;
+  color: $text-primary;
 }
  
 .voteButtons {
+  flex: 0 0 auto;
   display: flex;
   gap: 8px;
 }
  
-.thumbButton {
-  padding: 8px 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: #fff;
+// Unselected Yes/No = Tertiary token set (outline, no fill)
+.voteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid $btn-tertiary-stroke;
+  background: $btn-tertiary-bg;
+  color: $btn-tertiary-text;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 14px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
  
   &:hover:not(:disabled) {
-    background: #f3f3f3;
+    background: $btn-tertiary-bg-hover;
+    border-color: $btn-tertiary-stroke;
   }
  
   &:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
+    border-color: $btn-tertiary-stroke-disabled;
+    color: $btn-tertiary-text-disabled;
   }
+}
+ 
+// Selected Yes/No = Secondary token set (filled)
+.voteBtnSelected {
+  background: $btn-secondary-bg;
+  border-color: $btn-secondary-bg;
+  color: $btn-secondary-text;
+ 
+  &:hover:not(:disabled) {
+    background: $btn-secondary-bg-hover;
+    border-color: $btn-secondary-bg-hover;
+  }
+ 
+  &:disabled {
+    background: $btn-secondary-bg-disabled;
+    border-color: $btn-secondary-bg-disabled;
+    color: $btn-secondary-text-disabled;
+  }
+}
+ 
+.commentSection {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 14px;
 }
  
 .commentBox {
-  width: 100%;
-  min-height: 60px;
-  margin-bottom: 8px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: inherit;
+  flex: 1 1 auto;
+  min-height: 64px;
   resize: vertical;
-}
+  padding: 10px 12px;
+  border: 1px solid $border-grey;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: $text-primary;
  
-.submitButton {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  background: #d0021b; // 3M red accent, adjust to your design tokens
-  color: #fff;
-  cursor: pointer;
-  font-size: 14px;
+  &::placeholder {
+    color: $text-muted;
+  }
  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  &:focus {
+    outline: none;
+    border-color: $btn-secondary-bg;
   }
 }
  
-.thankYou {
-  font-weight: 600;
-  color: #217346;
+.actionButtons {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 160px;
 }
  
+// Submit = Primary Large colors
+.submitBtn {
+  padding: 8px 0;
+  border: none;
+  border-radius: 999px;
+  background: $btn-primary-bg;
+  color: $btn-primary-text;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+ 
+  &:hover:not(:disabled) {
+    background: $btn-primary-bg-hover;
+  }
+ 
+  &:disabled {
+    cursor: not-allowed;
+    background: $btn-primary-bg-disabled;
+    color: $btn-primary-text-disabled;
+  }
+}
+ 
+// Cancel = Tertiary Large colors
+.cancelBtn {
+  padding: 8px 0;
+  border: 1px solid $btn-tertiary-stroke;
+  border-radius: 999px;
+  background: $btn-tertiary-bg;
+  color: $btn-tertiary-text;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+ 
+  &:hover:not(:disabled) {
+    background: $btn-tertiary-bg-hover;
+    border-color: $btn-tertiary-stroke;
+  }
+ 
+  &:disabled {
+    cursor: not-allowed;
+    border-color: $btn-tertiary-stroke-disabled;
+    color: $btn-tertiary-text-disabled;
+  }
+}
+ 
+.thankYouSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+ 
+.checkIcon {
+  flex: 0 0 auto;
+}
+ 
+.thankYouTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-primary;
+}
+ 
+.thankYouSubtitle {
+  font-size: 13px;
+  color: $text-muted;
+  margin-top: 2px;
+}
+ 
+.errorText {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: $btn-primary-bg;
+  margin-top: 6px;
+}

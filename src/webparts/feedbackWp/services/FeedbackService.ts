@@ -1,11 +1,17 @@
-import { spfi, SPFx } from '@pnp/sp';
-import '@pnp/sp/webs';
-import '@pnp/sp/lists';
-import '@pnp/sp/items';
-import { WebPartContext } from '@microsoft/sp-webpart-base';
+import "@pnp/sp/webs";
+import "@pnp/sp/lists";
+import "@pnp/sp/items";
+import { WebPartContext } from "@microsoft/sp-webpart-base";
+import { SPHttpClient } from '@microsoft/sp-http';
 
-export interface IFeedbackTestItem {
+export interface IFeedbackPrompt {
   Id: number;
+  Title: string;
+  Active: boolean;
+  WeekNumber: number;
+}
+
+export interface IFeedbackResponse {
   Title: string;
   Comments: string;
   Like: boolean;
@@ -13,79 +19,101 @@ export interface IFeedbackTestItem {
   PromptId: number;
 }
 
-export interface IFeedbackPrompt {
-  Id: number;
-  Title: string;
-  Active: boolean;
-  WeekNumber: string;
-}
+const SITE_URL = 'https://sonatacms.sharepoint.com/sites/SmartHomeMonitoring';
+const PROMPTS_LIST = 'FeedbackPrompts';
+const RESPONSES_LIST = 'EmployeeFeedbackTest';
 
 export class FeedbackService {
-  private sp;
+  constructor(private context: WebPartContext) {}
 
-  constructor(context: WebPartContext) {
-    // This connects PnPjs to the current SharePoint site context (auth handled automatically)
-    this.sp = spfi().using(SPFx(context));
-  }
-
-  // Get whichever prompt is currently marked Active — this is what resets
-  // week to week / event to event, since a new prompt gets a new Id.
+  /**
+   * Returns the active prompt. If more than one row has Active = true,
+   * the most recently created one wins ($orderby=Created desc, $top=1).
+   * Returns null if no prompt is currently active.
+   */
   public async getActivePrompt(): Promise<IFeedbackPrompt | null> {
-    const prompts: IFeedbackPrompt[] = await this.sp.web.lists
-      .getByTitle('FeedbackPrompts')
-      .items
-      .select('Id', 'Title', 'Active', 'WeekNumber')
-      .filter('Active eq 1')
-      .top(1)();
+    const url =
+      `${SITE_URL}/_api/web/lists/getByTitle('${PROMPTS_LIST}')/items` +
+      `?$select=Id,Title,Active,WeekNumber,Created` +
+      `&$filter=Active eq 1` +
+      `&$orderby=Created desc` +
+      `&$top=1`;
 
-    return prompts.length > 0 ? prompts[0] : null;
+    const response = await this.context.spHttpClient.get(
+      url,
+      SPHttpClient.configurations.v1 as any
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`getActivePrompt failed (${response.status}): ${errorText}`);
+    }
+
+    const data = await response.json();
+    const items = data.value;
+
+    if (!items || items.length === 0) {
+      return null;
+    }
+
+    const item = items[0];
+    return {
+      Id: item.Id,
+      Title: item.Title,
+      Active: item.Active,
+      WeekNumber: item.WeekNumber
+    };
   }
 
-  // Write a new response into the list, tagged with which prompt it belongs to
-  public async addResponse(
-    like: boolean,
-    comment: string,
-    hashCode: string,
-    promptId: number
-  ): Promise<void> {
-    await this.sp.web.lists
-      .getByTitle('EmployeeFeedbackTest')
-      .items
-      .add({
-        Title: like ? 'Positive feedback' : 'Negative feedback',
-        Like: like,
-        Comments: comment,
-        HashCode_FeedbackStatus: hashCode,
-        PromptId: promptId
-      });
-
-    console.log('Response submitted successfully.');
-  }
-
-  // One-way hash of the user's login name — identity isn't stored,
-  // but the same user always produces the same hash, so duplicates are detectable.
-  public async hashUserIdentity(loginName: string): Promise<string> {
-    const encoded = new TextEncoder().encode(loginName);
-    const digestBuffer = await crypto.subtle.digest('SHA-256', encoded);
-    const bytes = new Uint8Array(digestBuffer);
+  /** SHA-256 hash of a string, hex-encoded manually (Array.from and padStart are avoided for older TS libs). */
+  public async hashUserIdentity(identity: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(identity);
+    const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+    const hashArray = new Uint8Array(hashBuffer);
 
     let hex = '';
-    for (let i = 0; i < bytes.length; i++) {
-      const byteHex = bytes[i].toString(16);
-      hex += byteHex.length === 1 ? `0${byteHex}` : byteHex;
+    for (let i = 0; i < hashArray.length; i++) {
+      const byteHex = hashArray[i].toString(16);
+      hex += byteHex.length === 1 ? '0' + byteHex : byteHex;
     }
     return hex;
   }
 
-  // Check whether this hash has already responded to THIS SPECIFIC prompt.
-  // Scoping by promptId is what makes the check reset for a new week/event.
-  public async hasUserResponded(hashCode: string, promptId: number): Promise<boolean> {
-    const existing: IFeedbackTestItem[] = await this.sp.web.lists
-      .getByTitle('EmployeeFeedbackTest')
-      .items
-      .filter(`HashCode_FeedbackStatus eq '${hashCode}' and PromptId eq ${promptId}`)
-      .top(1)();
+  /** Writes every submission — no duplicate blocking, resubmission is allowed by design. */
+  public async addResponse(payload: IFeedbackResponse): Promise<void> {
+    const url = `${SITE_URL}/_api/web/lists/getByTitle('${RESPONSES_LIST}')/items`;
 
-    return existing.length > 0;
+    const digest = await this.getRequestDigest();
+
+    const response = await this.context.spHttpClient.post(
+      url,
+      SPHttpClient.configurations.v1 as any,
+      {
+        headers: {
+          Accept: 'application/json;odata=nometadata',
+          'Content-type': 'application/json;odata=nometadata',
+          'odata-version': '',
+          'X-RequestDigest': digest
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`addResponse failed (${response.status}): ${errorText}`);
+    }
+  }
+
+  private async getRequestDigest(): Promise<string> {
+    const url = `${SITE_URL}/_api/contextinfo`;
+    const response = await this.context.spHttpClient.post(
+      url,
+      SPHttpClient.configurations.v1 as any,
+      { headers: { Accept: 'application/json;odata=nometadata' } }
+    );
+    const data = await response.json();
+    return data.FormDigestValue;
   }
 }

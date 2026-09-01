@@ -6,7 +6,6 @@ import {
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
 import * as strings from 'FeedbackWpWebPartStrings';
 import FeedbackWp from './components/FeedbackWp';
@@ -18,19 +17,12 @@ export interface IFeedbackWpWebPartProps {
 
 export default class FeedbackWpWebPart extends BaseClientSideWebPart<IFeedbackWpWebPartProps> {
 
-  private _isDarkTheme: boolean = false;
-  private _environmentMessage: string = '';
-
   public render(): void {
     const element: React.ReactElement<IFeedbackWpProps> = React.createElement(
       FeedbackWp,
       {
-        description: this.properties.description,
-        isDarkTheme: this._isDarkTheme,
-        environmentMessage: this._environmentMessage,
-        hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName,
-        context: this.context
+        context: this.context,
+        isActive: this.properties.description !== 'disabled' // Check if the web part is disabled
       }
     );
 
@@ -40,7 +32,7 @@ export default class FeedbackWpWebPart extends BaseClientSideWebPart<IFeedbackWp
   protected onInit(): Promise<void> {
 
     return this._getEnvironmentMessage().then(message => {
-      this._environmentMessage = message;
+
     });
   }
 
@@ -69,24 +61,6 @@ export default class FeedbackWpWebPart extends BaseClientSideWebPart<IFeedbackWp
     }
 
     return Promise.resolve(this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentSharePoint : strings.AppSharePointEnvironment);
-  }
-
-  protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
-    if (!currentTheme) {
-      return;
-    }
-
-    this._isDarkTheme = !!currentTheme.isInverted;
-    const {
-      semanticColors
-    } = currentTheme;
-
-    if (semanticColors) {
-      this.domElement.style.setProperty('--bodyText', semanticColors.bodyText || null);
-      this.domElement.style.setProperty('--link', semanticColors.link || null);
-      this.domElement.style.setProperty('--linkHovered', semanticColors.linkHovered || null);
-    }
-
   }
 
   protected onDispose(): void {

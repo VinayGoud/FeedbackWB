@@ -1,10 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 
 export interface IFeedbackWpProps {
-  description: string;
-  isDarkTheme: boolean;
-  environmentMessage: string;
-  hasTeamsContext: boolean;
-  userDisplayName: string;
   context: WebPartContext;
+  isActive: boolean;
 }

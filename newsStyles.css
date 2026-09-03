@@ -1,0 +1,177 @@
+/* ==========================================================================
+   News Styling Customizer - Company News Section
+   Targets: Title Web Part, Carousel (Top Story), Grid (2x2 News Items)
+   Uses stable data-automation-id selectors where possible
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TITLE WEB PART (Company News header + SEE ALL button)
+   -------------------------------------------------------------------------- */
+
+.sectionHeader_1eefe3a9 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px 16px 4px;
+}
+
+.sectionTitle_1eefe3a9 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* Pill-style SEE ALL button */
+.sectionSeeAll_1eefe3a9 {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 1.5px solid #1a1a1a;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #1a1a1a;
+  background-color: transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+.sectionSeeAll_1eefe3a9:hover {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   2. CAROUSEL / TOP STORY (Featured news carousel)
+   -------------------------------------------------------------------------- */
+
+div[data-automation-id="CarouselNewsLayout"] {
+  margin-bottom: 20px;
+}
+
+div[data-automation-id="carouselOuterContainer"] {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+}
+
+div[data-automation-id="SP-carouselItem"] {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Carousel image area - ensure rounded corners apply to image too */
+div[data-automation-id="carouselOuterContainer"] img {
+  border-radius: 16px;
+}
+
+/* Carousel title text - bigger, bold, overlaying image */
+div[data-automation-id="carouselOuterContainer"] [data-automation-id="newsItemTitle"] {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   3. GRID LAYOUT (2x2 news cards) - FIXED for wrapper mismatch + full width
+   -------------------------------------------------------------------------- */
+
+div[data-automation-id="gridNewsLayout"] {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Neutralize the extra wrapper around item 1 so it doesn't break grid placement */
+div[data-automation-id="gridNewsLayout"] > .i_5eziA_LASxl {
+  display: contents !important;
+}
+
+/* Target the actual card wrapper class directly (catches all 4 items evenly) */
+div[data-automation-id="gridNewsLayout"] .item-172 {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+/* Individual news card */
+div[data-automation-id="newsHelpItem"] {
+  width: 100% !important;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+div[data-automation-id="newsHelpItem"]:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+  transform: translateY(-2px);
+}
+
+/* Card image */
+div[data-automation-id="newsHelpItem"] .ms-NewsPinningItemImage {
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+
+div[data-automation-id="newsHelpItem"] img {
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Card text container */
+div[data-automation-id="newsHelpItem"] > div:last-child {
+  padding: 14px 16px;
+}
+
+/* Card title */
+div[data-automation-id="newsHelpItem"] [data-automation-id="newsItemTitle"] {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #1a1a1a;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 6px;
+}
+
+div[data-automation-id="newsHelpItem"] [data-automation-id="newsItemTitle"]:hover {
+  text-decoration: underline;
+}
+
+/* Card description */
+div[data-automation-id="newsHelpItem"] [data-automation-id="newsItemDescription"] {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #666666;
+  margin-bottom: 8px;
+}
+
+/* Author / views / date row */
+div[data-automation-id="newsHelpItem"] .m_teGKr_LASxl {
+  font-size: 12px;
+  color: #888888;
+  padding-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   4. RESPONSIVE FALLBACK (stack to 1 column on very narrow viewports)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  div[data-automation-id="gridNewsLayout"] {
+    grid-template-columns: 1fr;
+  }
+}

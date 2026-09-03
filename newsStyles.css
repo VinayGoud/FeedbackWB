@@ -7,7 +7,6 @@
 /* --------------------------------------------------------------------------
    1. TITLE WEB PART (Custom "GlobalnewsTitleWebPart" - project specific)
    -------------------------------------------------------------------------- */
-
 div[data-sp-feature-tag*="GlobalnewsTitleWebPart"] h2 {
   font-size: 28px;
   font-weight: 700;
@@ -73,10 +72,6 @@ div[data-automation-id="carouselOuterContainer"] [data-automation-id="newsItemTi
 /* --------------------------------------------------------------------------
    3. GRID LAYOUT (2x2 news cards) - fixed depth-mismatch bug
    -------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------
-   3. GRID LAYOUT (2x2 news cards) - WITH description + views/date visible
-   -------------------------------------------------------------------------- */
-
 div[data-automation-id="gridNewsLayout"] {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;

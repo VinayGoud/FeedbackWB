@@ -1,7 +1,7 @@
 /* ==========================================================================
    News Styling Customizer - Company News Section
    Targets: Title Web Part, Carousel (Top Story), Grid (2x2 News Items)
-   Uses stable data-automation-id selectors where possible
+   Uses stable data-automation-id and Griffel selectors confirmed via DOM
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -22,7 +22,6 @@
   margin: 0;
 }
 
-/* Pill-style SEE ALL button */
 .sectionSeeAll_1eefe3a9 {
   display: inline-block;
   padding: 8px 20px;
@@ -64,12 +63,10 @@ div[data-automation-id="SP-carouselItem"] {
   overflow: hidden;
 }
 
-/* Carousel image area - ensure rounded corners apply to image too */
 div[data-automation-id="carouselOuterContainer"] img {
   border-radius: 16px;
 }
 
-/* Carousel title text - bigger, bold, overlaying image */
 div[data-automation-id="carouselOuterContainer"] [data-automation-id="newsItemTitle"] {
   font-size: 32px;
   font-weight: 700;
@@ -79,7 +76,7 @@ div[data-automation-id="carouselOuterContainer"] [data-automation-id="newsItemTi
 }
 
 /* --------------------------------------------------------------------------
-   3. GRID LAYOUT (2x2 news cards) - FIXED for wrapper mismatch + full width
+   3. GRID LAYOUT (2x2 news cards)
    -------------------------------------------------------------------------- */
 
 div[data-automation-id="gridNewsLayout"] {
@@ -90,20 +87,22 @@ div[data-automation-id="gridNewsLayout"] {
   max-width: 100% !important;
 }
 
-/* Neutralize the extra wrapper around item 1 so it doesn't break grid placement */
-div[data-automation-id="gridNewsLayout"] > .i_5eziA_LASxl {
+/* Neutralize extra wrapper divs so grid children align evenly */
+div[data-automation-id="gridNewsLayout"] > div {
   display: contents !important;
 }
 
-/* Target the actual card wrapper class directly (catches all 4 items evenly) */
-div[data-automation-id="gridNewsLayout"] .item-172 {
-  width: 100% !important;
+/* Item wrapper - auto width, let grid columns control sizing */
+div[data-automation-id="gridNewsLayout"] .i_w-mnL_LASxl {
+  width: auto !important;
   max-width: 100% !important;
   min-width: 0 !important;
   margin: 0 !important;
 }
 
-/* Individual news card */
+/* Card container - DO NOT force flex-direction, let SharePoint's own
+   image/text layout (row or column) work; only add visual styling */
+div[data-automation-id="newsItem"],
 div[data-automation-id="newsHelpItem"] {
   width: 100% !important;
   border-radius: 12px;
@@ -111,58 +110,83 @@ div[data-automation-id="newsHelpItem"] {
   background-color: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
-  display: flex;
-  flex-direction: column;
 }
 
+div[data-automation-id="newsItem"]:hover,
 div[data-automation-id="newsHelpItem"]:hover {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
   transform: translateY(-2px);
 }
 
-/* Card image */
+/* Image area - keep native sizing, just apply rounding at the top */
+div[data-automation-id="newsItem"] .ms-NewsPinningItemImage,
 div[data-automation-id="newsHelpItem"] .ms-NewsPinningItemImage {
   border-radius: 12px 12px 0 0;
   overflow: hidden;
 }
 
+div[data-automation-id="newsItem"] img,
 div[data-automation-id="newsHelpItem"] img {
   object-fit: cover;
   width: 100%;
 }
 
-/* Card text container */
-div[data-automation-id="newsHelpItem"] > div:last-child {
-  padding: 14px 16px;
+/* Text container - force visible, static, full width/height
+   (fixes text disappearing when hasImage overlay styles apply) */
+div[data-automation-id="newsItem"] .t_OenmD_LASxl,
+div[data-automation-id="newsHelpItem"] .t_OenmD_LASxl {
+  position: static !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  width: 100% !important;
+  overflow: visible !important;
+  padding: 14px 16px !important;
+  box-sizing: border-box !important;
 }
 
-/* Card title */
+/* Card title - force dark/visible text color (fixes white-on-white
+   text inherited from image-overlay styling) */
+div[data-automation-id="newsItem"] [data-automation-id="newsItemTitle"],
 div[data-automation-id="newsHelpItem"] [data-automation-id="newsItemTitle"] {
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.35;
-  color: #1a1a1a;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+  color: #1a1a1a !important;
+  text-shadow: none !important;
   text-decoration: none;
-  display: block;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   margin-bottom: 6px;
 }
 
+div[data-automation-id="newsItem"] [data-automation-id="newsItemTitle"]:hover,
 div[data-automation-id="newsHelpItem"] [data-automation-id="newsItemTitle"]:hover {
   text-decoration: underline;
 }
 
-/* Card description */
+/* Card description - force visible */
+div[data-automation-id="newsItem"] [data-automation-id="newsItemDescription"],
 div[data-automation-id="newsHelpItem"] [data-automation-id="newsItemDescription"] {
-  font-size: 13px;
-  line-height: 1.4;
-  color: #666666;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  color: #666666 !important;
+  display: -webkit-box !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   margin-bottom: 8px;
 }
 
-/* Author / views / date row */
+/* Author / views / date row - force visible */
+div[data-automation-id="newsItem"] .m_teGKr_LASxl,
 div[data-automation-id="newsHelpItem"] .m_teGKr_LASxl {
-  font-size: 12px;
-  color: #888888;
+  font-size: 12px !important;
+  color: #888888 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   padding-top: 4px;
 }
 
@@ -172,6 +196,6 @@ div[data-automation-id="newsHelpItem"] .m_teGKr_LASxl {
 
 @media (max-width: 480px) {
   div[data-automation-id="gridNewsLayout"] {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
 }

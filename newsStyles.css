@@ -1,51 +1,40 @@
 /* ==========================================================================
-   News Styling Customizer - Company News Section
-   Targets: Title Web Part, Carousel (Top Story), Grid (2x2 News Items)
-   Uses stable data-automation-id and Griffel selectors confirmed via DOM
+   News Styling Customizer - TENANT-AGNOSTIC VERSION
+   Uses ONLY data-automation-id and ms-* semantic classes (stable across
+   all tenants/renders). No Griffel hashed classes or numeric suffixes.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. TITLE WEB PART (Company News header + SEE ALL button)
+   1. TITLE WEB PART (Custom "GlobalnewsTitleWebPart" - project specific)
    -------------------------------------------------------------------------- */
 
-.sectionHeader_1eefe3a9 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 4px 16px 4px;
-}
-
-.sectionTitle_1eefe3a9 {
+div[data-sp-feature-tag*="GlobalnewsTitleWebPart"] h2 {
   font-size: 28px;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
 }
 
-.sectionSeeAll_1eefe3a9 {
+div[data-sp-feature-tag*="GlobalnewsTitleWebPart"] a[href] {
   display: inline-block;
   padding: 8px 20px;
   border: 1.5px solid #1a1a1a;
   border-radius: 24px;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.5px;
   text-transform: uppercase;
   text-decoration: none;
   color: #1a1a1a;
-  background-color: transparent;
   transition: background-color 0.2s ease, color 0.2s ease;
-  white-space: nowrap;
 }
 
-.sectionSeeAll_1eefe3a9:hover {
+div[data-sp-feature-tag*="GlobalnewsTitleWebPart"] a[href]:hover {
   background-color: #1a1a1a;
   color: #ffffff;
-  text-decoration: none;
 }
 
 /* --------------------------------------------------------------------------
-   2. CAROUSEL / TOP STORY (Featured news carousel)
+   2. CAROUSEL / TOP STORY - image sizing SCOPED to carousel only
    -------------------------------------------------------------------------- */
 
 div[data-automation-id="CarouselNewsLayout"] {
@@ -58,13 +47,19 @@ div[data-automation-id="carouselOuterContainer"] {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
 }
 
-div[data-automation-id="SP-carouselItem"] {
+/* Scoped selector - only affects image INSIDE the carousel, not grid cards */
+div[data-automation-id="carouselOuterContainer"] .ms-NewsPinningItemImage {
+  width: 100% !important;
+  height: 420px !important;
+  min-width: 0 !important;
   border-radius: 16px;
   overflow: hidden;
 }
 
-div[data-automation-id="carouselOuterContainer"] img {
-  border-radius: 16px;
+div[data-automation-id="carouselOuterContainer"] .ms-NewsPinningItemImage img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
 }
 
 div[data-automation-id="carouselOuterContainer"] [data-automation-id="newsItemTitle"] {
@@ -76,122 +71,130 @@ div[data-automation-id="carouselOuterContainer"] [data-automation-id="newsItemTi
 }
 
 /* --------------------------------------------------------------------------
-   3. GRID LAYOUT (2x2 news cards)
+   3. GRID LAYOUT (2x2 news cards) - fixed depth-mismatch bug
+   -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   3. GRID LAYOUT (2x2 news cards) - WITH description + views/date visible
    -------------------------------------------------------------------------- */
 
 div[data-automation-id="gridNewsLayout"] {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 20px !important;
+  gap: 16px !important;
   width: 100% !important;
   max-width: 100% !important;
 }
 
-/* Neutralize extra wrapper divs so grid children align evenly */
-div[data-automation-id="gridNewsLayout"] > div {
+div[data-automation-id="gridNewsLayout"] div:not(.ms-NewsItem):not(.ms-NewsItem *) {
   display: contents !important;
 }
 
-/* Item wrapper - auto width, let grid columns control sizing */
-div[data-automation-id="gridNewsLayout"] .i_w-mnL_LASxl {
-  width: auto !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-}
-
-/* Card container - DO NOT force flex-direction, let SharePoint's own
-   image/text layout (row or column) work; only add visual styling */
-div[data-automation-id="newsItem"],
-div[data-automation-id="newsHelpItem"] {
+/* Card container - taller now to fit description + meta row */
+div.ms-NewsItem {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
   width: 100% !important;
-  border-radius: 12px;
+  min-width: 0 !important;
+  min-height: 100px !important;
+  border-radius: 10px;
   overflow: hidden;
   background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-div[data-automation-id="newsItem"]:hover,
-div[data-automation-id="newsHelpItem"]:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
-  transform: translateY(-2px);
-}
-
-/* Image area - keep native sizing, just apply rounding at the top */
-div[data-automation-id="newsItem"] .ms-NewsPinningItemImage,
-div[data-automation-id="newsHelpItem"] .ms-NewsPinningItemImage {
-  border-radius: 12px 12px 0 0;
-  overflow: hidden;
-}
-
-div[data-automation-id="newsItem"] img,
-div[data-automation-id="newsHelpItem"] img {
-  object-fit: cover;
-  width: 100%;
-}
-
-/* Text container - force visible, static, full width/height
-   (fixes text disappearing when hasImage overlay styles apply) */
-div[data-automation-id="newsItem"] .t_OenmD_LASxl,
-div[data-automation-id="newsHelpItem"] .t_OenmD_LASxl {
-  position: static !important;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  height: auto !important;
-  width: 100% !important;
-  overflow: visible !important;
-  padding: 14px 16px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease;
+  padding: 8px;
   box-sizing: border-box !important;
 }
 
-/* Card title - force dark/visible text color (fixes white-on-white
-   text inherited from image-overlay styling) */
-div[data-automation-id="newsItem"] [data-automation-id="newsItemTitle"],
-div[data-automation-id="newsHelpItem"] [data-automation-id="newsItemTitle"] {
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  line-height: 1.35 !important;
-  color: #1a1a1a !important;
-  text-shadow: none !important;
-  text-decoration: none;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  margin-bottom: 6px;
+div.ms-NewsItem:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
 }
 
-div[data-automation-id="newsItem"] [data-automation-id="newsItemTitle"]:hover,
-div[data-automation-id="newsHelpItem"] [data-automation-id="newsItemTitle"]:hover {
+/* Image area - slightly taller to balance with more text content */
+div[data-automation-id="gridNewsLayout"] .ms-NewsPinningItemImage {
+  width: 100px !important;
+  height: 100px !important;
+  min-width: 100px !important;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+
+div[data-automation-id="gridNewsLayout"] .ms-NewsPinningItemImage img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Text container */
+div.ms-NewsItem > div:last-child {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: auto !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  padding: 2px 4px !important;
+  box-sizing: border-box !important;
+}
+
+/* Site attribution - keep hidden (or remove this rule if you want it back) */
+.ms-NewsSiteTitle {
+  display: none !important;
+}
+
+/* Title */
+div[data-automation-id="gridNewsLayout"] [data-automation-id="newsItemTitle"] {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+  display: -webkit-box !important;
+  line-clamp: 2 !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  text-decoration: none;
+  margin-bottom: 3px;
+}
+
+div[data-automation-id="gridNewsLayout"] [data-automation-id="newsItemTitle"]:hover {
   text-decoration: underline;
 }
 
-/* Card description - force visible */
-div[data-automation-id="newsItem"] [data-automation-id="newsItemDescription"],
-div[data-automation-id="newsHelpItem"] [data-automation-id="newsItemDescription"] {
-  font-size: 13px !important;
-  line-height: 1.4 !important;
-  color: #666666 !important;
+/* Description - now VISIBLE, truncated to 2 lines */
+div[data-automation-id="gridNewsLayout"] [data-automation-id="newsItemDescription"] {
   display: -webkit-box !important;
+  line-clamp: 2 !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
   visibility: visible !important;
   opacity: 1 !important;
-  margin-bottom: 8px;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  color: #666666 !important;
+  margin-bottom: 4px;
 }
 
-/* Author / views / date row - force visible */
-div[data-automation-id="newsItem"] .m_teGKr_LASxl,
-div[data-automation-id="newsHelpItem"] .m_teGKr_LASxl {
-  font-size: 12px !important;
-  color: #888888 !important;
+/* Author / views / date row - now VISIBLE */
+div[data-automation-id="gridNewsLayout"] .m_teGKr_LASxl {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  padding-top: 4px;
+  font-size: 11px !important;
+  color: #888888 !important;
+  padding-top: 2px;
 }
 
 /* --------------------------------------------------------------------------
-   4. RESPONSIVE FALLBACK (stack to 1 column on very narrow viewports)
+   4. RESPONSIVE FALLBACK
    -------------------------------------------------------------------------- */
 
 @media (max-width: 480px) {

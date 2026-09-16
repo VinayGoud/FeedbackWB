@@ -1,45 +1,118 @@
 .myLearnings {
-  padding: 16px;
-  border: 1px solid #e1e1e1;
-  border-radius: 4px;
+  width: 100%;
   font-family: inherit;
-  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.card {
+  background: #f5f5f5;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
 .title {
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  color: #242424;
+  font-size: 24px;
   font-weight: 600;
-  color: #333333;
-  margin-bottom: 8px;
+  line-height: 32px;
+
+  &::after {
+    content: '';
+    width: 64px;
+    height: 4px;
+    background: #d71920;
+    margin-left: 16px;
+  }
+}
+
+.content {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-sizing: border-box;
+}
+
+.trainingTitle {
+  display: flex;
+  align-items: center;
+  color: #242424;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  margin-bottom: 12px;
 }
 
 .description {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 8px;
-}
-
-.message {
-  font-size: 13px;
-  color: #555555;
-  line-height: 1.4;
+  color: #424242;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
   margin-bottom: 16px;
 }
 
 .linkRow {
   display: flex;
+  align-items: center;
   gap: 24px;
+  flex-wrap: wrap;
 }
 
 .link {
-  font-size: 13px;
+  color: #a6192e;
+  font-size: 14px;
   font-weight: 600;
-  color: #d0021b;
+  line-height: 20px;
   text-decoration: underline;
+  text-underline-offset: 2px;
   cursor: pointer;
 
   &:hover {
-    color: #a80115;
+    color: #7f1323;
+  }
+
+  &:focus {
+    outline: 2px solid #242424;
+    outline-offset: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 16px;
+  }
+
+  .header {
+    margin-bottom: 16px;
+  }
+
+  .title {
+    font-size: 22px;
+    line-height: 28px;
+
+    &::after {
+      width: 48px;
+      margin-left: 12px;
+    }
+  }
+
+  .content {
+    padding: 16px;
+  }
+
+  .description {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .linkRow {
+    gap: 16px;
   }
 }

@@ -1,0 +1,45 @@
+.myLearnings {
+  padding: 16px;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  font-family: inherit;
+  background: #ffffff;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.message {
+  font-size: 13px;
+  color: #555555;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.linkRow {
+  display: flex;
+  gap: 24px;
+}
+
+.link {
+  font-size: 13px;
+  font-weight: 600;
+  color: #d0021b;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: #a80115;
+  }
+}

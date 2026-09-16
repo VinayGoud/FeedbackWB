@@ -2,11 +2,8 @@ import * as React from 'react';
 import styles from './MyLearnings.module.scss';
 import type { IMyLearningsProps } from './IMyLearningsProps';
 
-import { spfi, SPFx } from '@pnp/sp';
-import '@pnp/sp/profiles';
-
-import { APIService } from '../../../adaptiveCardExtensions/training/Services/APIService';
 import { ITrainings } from '../../../adaptiveCardExtensions/training/Utilities/Interfaces';
+import { MyLearningsService } from '../services/MyLearningsService';
 
 const MyLearnings: React.FC<IMyLearningsProps> = (props) => {
 
@@ -20,36 +17,13 @@ const MyLearnings: React.FC<IMyLearningsProps> = (props) => {
 
     const loadTrainingDetails = async (): Promise<void> => {
       try {
-        console.log('useStageConnection:', props.useStageConnection);
+        setIsLoading(true);
 
-        const sp = spfi().using(SPFx(props.context));
+        const service = new MyLearningsService(props.context);
 
-        const [userId, userIdAPIStatus] =
-          await APIService.getUserId(
-            sp,
-            props.context
-          );
-
-        console.log('userId:', userId);
-        console.log('userIdAPIStatus:', userIdAPIStatus);
-
-        if (userIdAPIStatus) {
-          console.error('Unable to retrieve user ID.');
-          setIsLoading(false);
-          return;
-        }
-
-        const details =
-          await APIService.getTrainingDetails(
-            props.context,
-            userId,
-            props.useStageConnection
-          );
-
-        console.log('trainingDetails:', details);
-        console.log(
-          'mandatoryCourses:',
-          details.cardView?.mandatoryCourses
+        const details = await service.getTrainingDetails(
+          '',
+          props.useStageConnection
         );
 
         setTrainingDetails(details);
@@ -127,6 +101,7 @@ const MyLearnings: React.FC<IMyLearningsProps> = (props) => {
           )}
 
         </div>
+
       </div>
     </section>
   );

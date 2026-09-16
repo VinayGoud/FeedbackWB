@@ -29,34 +29,74 @@ export class MyLearningsService {
     );
   }
 
-  private _getCachedTrainingDetails(): ITrainings | undefined {
-    try {
-      const trainingDetails = localStorage.getItem(
-        Constants.localStorageTrainingKey
-      );
+private _getCachedTrainingDetails(): ITrainings | undefined {
+  try {
+    const trainingDetails = localStorage.getItem(
+      Constants.localStorageTrainingKey
+    );
 
-      const expiryTime = localStorage.getItem(
-        Constants.localStorageExpiryKey
-      );
+    const expiryTime = localStorage.getItem(
+      Constants.localStorageExpiryKey
+    );
 
-      if (!trainingDetails || !expiryTime) {
-        return undefined;
-      }
+    console.log(
+      '[MyLearningsService] Training key:',
+      Constants.localStorageTrainingKey
+    );
 
-      const expiryDate = new Date(expiryTime);
+    console.log(
+      '[MyLearningsService] Expiry key:',
+      Constants.localStorageExpiryKey
+    );
 
-      if (new Date() >= expiryDate) {
-        return undefined;
-      }
+    console.log(
+      '[MyLearningsService] Cached training details:',
+      trainingDetails
+    );
 
-      return JSON.parse(trainingDetails) as ITrainings;
-    } catch (error) {
-      console.error(
-        '[MyLearningsService] Failed to read cached training details.',
-        error
-      );
+    console.log(
+      '[MyLearningsService] Cached expiry time:',
+      expiryTime
+    );
 
+    if (!trainingDetails || !expiryTime) {
+      console.log('[MyLearningsService] Cache not found.');
       return undefined;
     }
+
+    const expiryDate = new Date(expiryTime);
+    const currentDate = new Date();
+
+    console.log(
+      '[MyLearningsService] Expiry date:',
+      expiryDate
+    );
+
+    console.log(
+      '[MyLearningsService] Current date:',
+      currentDate
+    );
+
+    if (currentDate >= expiryDate) {
+      console.log('[MyLearningsService] Cache expired.');
+      return undefined;
+    }
+
+    const cachedData = JSON.parse(trainingDetails) as ITrainings;
+
+    console.log(
+      '[MyLearningsService] Using cached training details:',
+      cachedData
+    );
+
+    return cachedData;
+  } catch (error) {
+    console.error(
+      '[MyLearningsService] Failed to read cached training details.',
+      error
+    );
+
+    return undefined;
   }
+}
 }

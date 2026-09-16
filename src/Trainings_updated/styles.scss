@@ -1,0 +1,109 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.myLearnings {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: $ms-font-family-fallbacks;
+}
+
+.card {
+  background: #f5f5f5;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  color: #242424;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 36px;
+}
+
+.title::after {
+  content: '';
+  display: inline-block;
+  width: 64px;
+  height: 4px;
+  margin-left: 20px;
+  vertical-align: middle;
+  background-color: #d71920;
+}
+
+.content {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-sizing: border-box;
+}
+
+.trainingTitle {
+  color: #242424;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  margin-bottom: 12px;
+}
+
+.description {
+  color: #424242;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  margin-bottom: 16px;
+  max-width: 520px;
+}
+
+.link {
+  display: inline-block;
+  color: #a6192e;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  &::after {
+    content: '↗';
+    margin-left: 5px;
+  }
+
+  &:hover {
+    color: #7f1323;
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid #242424;
+    outline-offset: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 16px;
+  }
+
+  .header {
+    margin-bottom: 16px;
+  }
+
+  .title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .title::after {
+    width: 48px;
+    margin-left: 14px;
+  }
+
+  .content {
+    padding: 16px;
+  }
+}

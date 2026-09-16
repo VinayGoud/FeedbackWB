@@ -1,105 +1,147 @@
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
-import { Version } from '@microsoft/sp-core-library';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import { spfi, SPFx as SPFx } from '@pnp/sp';
-import "@pnp/sp/profiles";
-import "@pnp/sp/webs";
-import "@pnp/sp/items";
-import "@pnp/sp/lists";
+import { Icon } from '@fluentui/react/lib/Icon';
 
-import * as strings from 'MyLearningsWebPartStrings';
-import MyLearnings from './components/MyLearnings';
-import { IMyLearningsProps } from './components/IMyLearningsProps';
-import { APIService } from '../../adaptiveCardExtensions/training/Services/APIService';
-import { Constants } from '../../adaptiveCardExtensions/training/Utilities/Constants';
-import { ITrainings } from '../../adaptiveCardExtensions/training/Utilities/Interfaces';
+import styles from './MyLearnings.module.scss';
+import type { IMyLearningsProps } from './IMyLearningsProps';
 
-export interface IMyLearningsWebPartProps {
-  description: string;
-  stageConnection: boolean;
-  userID: string;
-}
+import { ITrainings } from '../../../adaptiveCardExtensions/training/Utilities/Interfaces';
+import { MyLearningsService } from '../services/MyLearningsService';
 
-export default class MyLearningsWebPart extends BaseClientSideWebPart<IMyLearningsWebPartProps> {
+const MyLearnings: React.FC<IMyLearningsProps> = (props) => {
 
-  private mandatoryCourseCount: number = 0;
-  private errorOccuredStatus: boolean = false;
+  const [trainingDetails, setTrainingDetails] =
+    React.useState<ITrainings | null>(null);
 
-  protected async onInit(): Promise<void> {
+  const [isLoading, setIsLoading] =
+    React.useState<boolean>(true);
 
-    let trainingDetails: ITrainings = {
-      apiErrorOccuredStatus: true,
-      success: false,
-      errorMessage: '',
-      errorCode: 0,
-      openButtonLabel: "",
-      cardView: {
-        title: "",
-        mandatoryCourses: 0,
-        messageText: "",
-        topActivities: []
-      },
-      quickView: [],
-      cachingTime: '',
-      dueDatePassedCount: 0,
-      isDateisWithin7Days: false,
-      dueSoonCount: 0
+  React.useEffect(() => {
+
+    const loadTrainingDetails = async (): Promise<void> => {
+      try {
+        setIsLoading(true);
+
+        const service = new MyLearningsService(props.context);
+
+        const details = await service.getTrainingDetails(
+          '',
+          props.useStageConnection
+        );
+
+        setTrainingDetails(details);
+      }
+      catch (error) {
+        console.error('Error loading training details:', error);
+      }
+      finally {
+        setIsLoading(false);
+      }
     };
 
-    try {
-      const sp = spfi().using(SPFx(this.context));
+    loadTrainingDetails()
+      .catch((error) => {
+        console.error('Error loading training details:', error);
+      });
 
-      const stageConnection: boolean = this.properties.stageConnection ? true : false;
+  }, [props.context, props.useStageConnection]);
 
-      let userId: string = "";
-      let userIdAPIStatus: boolean = false;
-
-      if (this.properties.stageConnection) {
-        [userId, userIdAPIStatus] = await APIService.getUserId(sp, this.context as any);
-      } else {
-        userId = this.properties.userID;
-      }
-
-      if (!userIdAPIStatus) {
-        trainingDetails = await APIService.getTrainingDetails(
-          this.context as any,
-          userId,
-          stageConnection
-        );
-      }
-
-      this.mandatoryCourseCount = !trainingDetails.apiErrorOccuredStatus && trainingDetails.cardView
-        ? trainingDetails.cardView.mandatoryCourses
-        : 0;
-
-      this.errorOccuredStatus = trainingDetails.apiErrorOccuredStatus;
-
-    } catch (error) {
-      this.errorOccuredStatus = true;
-      this.mandatoryCourseCount = 0;
-    }
-
-    return super.onInit();
-  }
-
-  public render(): void {
-    const element: React.ReactElement<IMyLearningsProps> = React.createElement(
-      MyLearnings,
-      {
-        mandatoryCourseCount: this.mandatoryCourseCount,
-        errorOccuredStatus: this.errorOccuredStatus
-      }
+  if (isLoading) {
+    return (
+      <section className={styles.myLearnings}>
+        <div className={styles.card}>
+          <div className={styles.loading}>
+            Loading...
+          </div>
+        </div>
+      </section>
     );
-
-    ReactDom.render(element, this.domElement);
   }
 
-  protected onDispose(): void {
-    ReactDom.unmountComponentAtNode(this.domElement);
-  }
+  const mandatoryCourses =
+    trainingDetails?.cardView?.mandatoryCourses ?? 0;
 
-  protected get dataVersion(): Version {
-    return Version.parse('1.0');
-  }
-}
+  const hasMandatoryCourses = mandatoryCourses > 0;
+
+  return (
+    <section className={styles.myLearnings}>
+
+      <div className={styles.header}>
+        <h2 className={styles.title}>
+          My Learning
+        </h2>
+        <span className={styles.titleLine} />
+      </div>
+
+      <div className={styles.card}>
+
+        <div className={styles.trainingHeader}>
+          <Icon
+            iconName="ReadingMode"
+            className={styles.trainingIcon}
+          />
+
+          <div className={styles.trainingTitle}>
+            {hasMandatoryCourses
+              ? mandatoryCourses === 1
+                ? '1 mandatory course assigned'
+                : `${mandatoryCourses} mandatory courses assigned`
+              : 'Training'}
+          </div>
+        </div>
+
+        <div className={styles.description}>
+          {hasMandatoryCourses
+            ? (
+              <>
+                Explore <strong>'My Dashboard'</strong> in 3M Learn for all
+                assigned learning, training, and certifications.
+              </>
+            )
+            : (
+              <>
+                Explore 3M Learn to find assigned training and personalized
+                learning for career development.
+              </>
+            )}
+        </div>
+
+        <div className={styles.linkRow}>
+
+          {hasMandatoryCourses && (
+            <button
+              type="button"
+              className={styles.linkButton}
+            >
+              {mandatoryCourses === 1
+                ? 'VIEW COURSE'
+                : 'VIEW COURSES'}
+
+              <Icon
+                iconName="OpenInNewWindow"
+                className={styles.linkIcon}
+              />
+            </button>
+          )}
+
+          <a
+            className={styles.link}
+            href="#"
+            onClick={(event) => event.preventDefault()}
+          >
+            EXPLORE 3M LEARN
+
+            <Icon
+              iconName="OpenInNewWindow"
+              className={styles.linkIcon}
+            />
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+  );
+};
+
+export default MyLearnings;

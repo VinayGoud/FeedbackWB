@@ -1,0 +1,227 @@
+/* =========================================================
+   Training Quick View
+   ========================================================= */
+
+.trainingQuickView {
+  :global(.ms-Callout-main) {
+    width: 500px;
+    max-width: 500px;
+    max-height: 650px;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 8px;
+  }
+}
+
+.quickViewContainer {
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+
+/* Quick View header */
+
+.quickViewHeader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  padding: 0 56px;
+  box-sizing: border-box;
+}
+
+.quickViewHeaderTitle {
+  color: #242424;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+}
+
+.quickViewCloseButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  color: #424242;
+
+  &:hover {
+    color: #242424;
+    background: #f5f5f5;
+  }
+}
+
+
+/* Quick View content */
+
+.quickViewContent {
+  padding: 10px 28px 24px;
+  box-sizing: border-box;
+}
+
+.quickViewTitle {
+  margin-bottom: 10px;
+  color: #242424;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+}
+
+.quickViewDescription {
+  margin-bottom: 28px;
+  color: #424242;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+}
+
+
+/* Training items */
+
+.quickViewItems {
+  width: 100%;
+}
+
+.quickViewItem {
+  padding: 0 4px 28px;
+  box-sizing: border-box;
+  background: transparent;
+
+  &:last-child {
+    padding-bottom: 4px;
+  }
+}
+
+.quickViewTrainingTitle {
+  margin-bottom: 8px;
+  color: #242424;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.quickViewMessage {
+  margin-bottom: 20px;
+  color: #424242;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 19px;
+}
+
+
+/* Due date and Open button */
+
+.quickViewFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.quickViewDateRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.quickViewDate {
+  color: #424242;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.quickViewDateAttention {
+  color: #a4262c;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.quickViewDateIcon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  object-fit: contain;
+}
+
+
+/* Open button */
+
+.quickViewOpenButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  min-height: 32px;
+  padding: 5px 14px;
+  box-sizing: border-box;
+  border: 1px solid #242424;
+  border-radius: 3px;
+  background: #242424;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: #424242;
+    border-color: #424242;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #242424;
+    outline-offset: 2px;
+  }
+}
+
+
+/* Responsive */
+
+@media (max-width: 600px) {
+  .trainingQuickView {
+    :global(.ms-Callout-main) {
+      width: 420px;
+      max-width: calc(100vw - 24px);
+    }
+  }
+
+  .quickViewContent {
+    padding: 10px 22px 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .trainingQuickView {
+    :global(.ms-Callout-main) {
+      width: calc(100vw - 24px);
+      max-width: calc(100vw - 24px);
+    }
+  }
+
+  .quickViewHeader {
+    min-height: 56px;
+  }
+
+  .quickViewContent {
+    padding: 8px 18px 20px;
+  }
+
+  .quickViewDescription {
+    margin-bottom: 24px;
+  }
+
+  .quickViewItem {
+    padding-bottom: 24px;
+  }
+}

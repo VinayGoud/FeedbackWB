@@ -1,45 +1,16 @@
 import * as React from 'react';
+
 import styles from './MyLearnings.module.scss';
 import type { IMyLearningsProps } from './IMyLearningsProps';
 
-import { spfi, SPFx } from '@pnp/sp';
-import '@pnp/sp/profiles';
-
-import { APIService } from '../../../adaptiveCardExtensions/training/Services/APIService';
 import { ITrainings } from '../../../adaptiveCardExtensions/training/Utilities/Interfaces';
-import { Constants } from '../../../adaptiveCardExtensions/training/Utilities/Constants';
+import { MyLearningsService } from '../services/MyLearningsService';
+import TrainingQuickView from './TrainingQuickView';
 
-const TrainingIcon: React.FC = () => (
-  <svg
-    className={styles.trainingIcon}
-    viewBox="0 0 24 24"
-    aria-hidden="true"
-  >
-    <path
-      d="M3.5 5.5c2.8 0 5.4.7 8.5 2.5v11c-3.1-1.8-5.7-2.5-8.5-2.5v-11z"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M20.5 5.5c-2.8 0-5.4.7-8.5 2.5v11c3.1-1.8 5.7-2.5 8.5-2.5v-11z"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M6 9c1.7.2 3.2.7 4.5 1.4M6 12c1.7.2 3.2.7 4.5 1.4M18 9c-1.7.2-3.2.7-4.5 1.4M18 12c-1.7.2-3.2.7-4.5 1.4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-    />
-  </svg>
-);
+const trainingIcon: string = require('../assets/training-book.svg');
 
 const MyLearnings: React.FC<IMyLearningsProps> = (props) => {
+
   const [trainingDetails, setTrainingDetails] =
     React.useState<ITrainings | null>(null);
 
@@ -49,55 +20,51 @@ const MyLearnings: React.FC<IMyLearningsProps> = (props) => {
   const [showQuickView, setShowQuickView] =
     React.useState<boolean>(false);
 
+  const viewCoursesButtonRef =
+    React.useRef<HTMLButtonElement>(null);
+
   React.useEffect(() => {
+
     const loadTrainingDetails = async (): Promise<void> => {
       try {
-        const cachedTraining =
-          localStorage.getItem(Constants.localStorageTrainingKey);
+        setIsLoading(true);
 
-        if (cachedTraining) {
-          const cachedDetails = JSON.parse(cachedTraining) as ITrainings;
-          setTrainingDetails(cachedDetails);
-          setIsLoading(false);
-          return;
-        }
+        const service = new MyLearningsService(props.context);
 
-        const sp = spfi().using(SPFx(props.context));
-
-        const [userId, userIdAPIStatus] =
-          await APIService.getUserId(sp, props.context);
-
-        if (userIdAPIStatus) {
-          setIsLoading(false);
-          return;
-        }
-
-        const details =
-          await APIService.getTrainingDetails(
-            props.context,
-            userId,
-            props.useStageConnection
-          );
+        const details = await service.getTrainingDetails(
+          '',
+          props.useStageConnection
+        );
 
         setTrainingDetails(details);
       }
       catch (error) {
-        console.error('Error loading training details:', error);
+        console.error(
+          'Error loading training details:',
+          error
+        );
       }
       finally {
         setIsLoading(false);
       }
     };
 
-    loadTrainingDetails().catch((error) => {
-      console.error('Error loading training details:', error);
-    });
+    loadTrainingDetails()
+      .catch((error) => {
+        console.error(
+          'Error loading training details:',
+          error
+        );
+      });
+
   }, [props.context, props.useStageConnection]);
 
   if (isLoading) {
     return (
       <section className={styles.myLearnings}>
-        <div className={styles.loading}>Loading...</div>
+        <div className={styles.loading}>
+          Loading...
+        </div>
       </section>
     );
   }
@@ -105,34 +72,68 @@ const MyLearnings: React.FC<IMyLearningsProps> = (props) => {
   const mandatoryCourses =
     trainingDetails?.cardView?.mandatoryCourses ?? 0;
 
+  const hasMandatoryCourses =
+    mandatoryCourses > 0;
+
   return (
     <section className={styles.myLearnings}>
 
       <div className={styles.header}>
-        <h2 className={styles.heading}>My Learning</h2>
+
+        <h2 className={styles.heading}>
+          My Learning
+        </h2>
+
         <span className={styles.headingLine} />
+
       </div>
 
-      {mandatoryCourses > 0 && (
-        <div className={styles.learningCard}>
+      <div className={styles.learningCard}>
 
-          <div className={styles.cardTitleRow}>
-            <TrainingIcon />
+        <div className={styles.cardTitleRow}>
 
-            <div className={styles.cardTitle}>
-              {mandatoryCourses === 1
+          <img
+            src={trainingIcon}
+            className={styles.trainingIcon}
+            alt=""
+            aria-hidden="true"
+          />
+
+          <div className={styles.cardTitle}>
+
+            {hasMandatoryCourses
+              ? mandatoryCourses === 1
                 ? '1 mandatory course assigned'
-                : `${mandatoryCourses} mandatory courses assigned`}
-            </div>
+                : `${mandatoryCourses} mandatory courses assigned`
+              : 'Training'}
+
           </div>
 
-          <div className={styles.description}>
-            Explore 'My Dashboard' in 3M Learn for all assigned
-            learning, training, and certifications.
-          </div>
+        </div>
 
-          <div className={styles.linkRow}>
+        <div className={styles.description}>
+
+          {hasMandatoryCourses
+            ? (
+              <>
+                Explore 'My Dashboard' in 3M Learn for all assigned
+                learning, training, and certifications.
+              </>
+            )
+            : (
+              <>
+                Explore 3M Learn to find assigned training and
+                personalized learning for career development.
+              </>
+            )}
+
+        </div>
+
+        <div className={styles.linkRow}>
+
+          {hasMandatoryCourses && (
             <button
+              ref={viewCoursesButtonRef}
               type="button"
               className={styles.actionLink}
               onClick={() => setShowQuickView(true)}
@@ -140,131 +141,43 @@ const MyLearnings: React.FC<IMyLearningsProps> = (props) => {
               {mandatoryCourses === 1
                 ? 'VIEW COURSE'
                 : 'VIEW COURSES'}
-              <span className={styles.arrow}>↗</span>
+
+              <span className={styles.arrow}>
+                ↗
+              </span>
             </button>
+          )}
 
-            <a
-              className={styles.actionLink}
-              href={Constants.cardButtonTarget}
-              target="_blank"
-              rel="noreferrer"
-            >
-              EXPLORE 3M LEARN
-              <span className={styles.arrow}>↗</span>
-            </a>
-          </div>
-
-        </div>
-      )}
-
-      <div className={styles.learningCard}>
-
-        <div className={styles.cardTitleRow}>
-          <TrainingIcon />
-
-          <div className={styles.cardTitle}>
-            Training
-          </div>
-        </div>
-
-        <div className={styles.description}>
-          Explore 3M Learn to find assigned training and personalized
-          learning for career development.
-        </div>
-
-        <div className={styles.linkRow}>
           <a
             className={styles.actionLink}
-            href={Constants.cardButtonTarget}
-            target="_blank"
-            rel="noreferrer"
+            href="#"
+            onClick={(event) => event.preventDefault()}
           >
             EXPLORE 3M LEARN
-            <span className={styles.arrow}>↗</span>
+
+            <span className={styles.arrow}>
+              ↗
+            </span>
           </a>
+
         </div>
 
       </div>
 
-      {showQuickView && trainingDetails && (
-        <div className={styles.quickViewOverlay}>
+      {showQuickView &&
+        trainingDetails &&
+        viewCoursesButtonRef.current && (
 
-          <div className={styles.quickView}>
+          <TrainingQuickView
+            target={viewCoursesButtonRef.current}
+            items={trainingDetails.quickView}
+            mandatoryCourseCount={mandatoryCourses}
+            title="Training"
+            description="Mandatory training courses assigned to you."
+            onDismiss={() => setShowQuickView(false)}
+          />
 
-            <div className={styles.quickViewHeader}>
-              <span className={styles.quickViewTitle}>
-                Training
-              </span>
-
-              <button
-                type="button"
-                className={styles.closeButton}
-                onClick={() => setShowQuickView(false)}
-                aria-label="Close training"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className={styles.quickViewContent}>
-
-              {trainingDetails.quickView.map((training, index) => (
-                <div
-                  className={styles.trainingItem}
-                  key={`${training.trainingTitle}-${index}`}
-                >
-                  <div className={styles.cardTitleRow}>
-                    <TrainingIcon />
-
-                    <div className={styles.courseTitle}>
-                      {training.trainingTitle}
-                    </div>
-                  </div>
-
-                  {training.systemMessage && (
-                    <div className={styles.courseMessage}>
-                      {training.systemMessage}
-                    </div>
-                  )}
-
-                  {training.message && (
-                    <div className={styles.courseMessage}>
-                      {training.message}
-                    </div>
-                  )}
-
-                  {training.trainingDateDisplayFormat && (
-                    <div
-                      className={
-                        training.dueDatePassed
-                          ? styles.dueDatePassed
-                          : styles.dueDate
-                      }
-                    >
-                      {training.trainingDateDisplayFormat}
-                    </div>
-                  )}
-
-                  {training.button && (
-                    <a
-                      href={training.button}
-                      className={styles.actionLink}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {training.openButtonLabel || 'OPEN'}
-                      <span className={styles.arrow}>↗</span>
-                    </a>
-                  )}
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-
-        </div>
-      )}
+        )}
 
     </section>
   );

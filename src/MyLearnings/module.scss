@@ -1,96 +1,103 @@
 .myLearnings {
   width: 100%;
+  max-width: 360px;
+  padding: 20px;
   box-sizing: border-box;
   font-family: inherit;
+  color: #242424;
+  background: #ffffff;
 }
 
 .header {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
-.title {
+.heading {
   margin: 0;
-  color: #242424;
   font-size: 24px;
   font-weight: 600;
-  line-height: 32px;
+  line-height: 30px;
+  color: #242424;
 }
 
-.titleLine {
-  width: 64px;
-  height: 4px;
-  margin-left: 16px;
-  background-color: #d71920;
+.headingLine {
+  width: 40px;
+  height: 3px;
+  margin-left: 12px;
+  background: #a6192e;
 }
 
-.card {
-  width: 100%;
-  padding: 20px 24px;
-  background-color: #ffffff;
-  border-radius: 12px;
+.learningCard {
+  padding: 16px;
+  margin-bottom: 10px;
   box-sizing: border-box;
+  background: #f7f7f7;
+  border-radius: 8px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
-.trainingHeader {
+.cardTitleRow {
   display: flex;
-  align-items: center;
-  margin-bottom: 12px;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .trainingIcon {
-  flex-shrink: 0;
-  margin-right: 10px;
-  color: #242424;
-  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  margin-top: 1px;
+  color: #8b1e2d;
 }
 
-.trainingTitle {
-  color: #242424;
-  font-size: 18px;
+.cardTitle {
+  font-size: 14px;
   font-weight: 600;
-  line-height: 24px;
+  line-height: 20px;
+  color: #242424;
 }
 
 .description {
-  max-width: 560px;
-  margin-bottom: 18px;
-  color: #424242;
-  font-size: 16px;
+  margin-left: 28px;
+  margin-bottom: 14px;
+  font-size: 13px;
   font-weight: 400;
-  line-height: 24px;
-
-  strong {
-    font-weight: 600;
-  }
+  line-height: 19px;
+  color: #424242;
 }
 
 .linkRow {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
-  gap: 24px;
+  align-items: center;
+  gap: 20px;
+  margin-left: 28px;
 }
 
-.link,
-.linkButton {
+.actionLink {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   padding: 0;
   border: 0;
   background: transparent;
-  color: #a6192e;
+  color: #8b1e2d;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  line-height: 20px;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  line-height: 18px;
+  text-decoration: none;
   cursor: pointer;
 
   &:hover {
-    color: #7f1323;
+    color: #681621;
+    text-decoration: underline;
   }
 
   &:focus-visible {
@@ -99,47 +106,128 @@
   }
 }
 
-.linkIcon {
-  margin-left: 6px;
-  font-size: 12px;
+.arrow {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .loading {
-  color: #424242;
+  padding: 16px;
   font-size: 14px;
-  line-height: 20px;
+  color: #424242;
+}
+
+/* Training quick view */
+
+.quickViewOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.quickView {
+  width: 420px;
+  max-width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: #ffffff;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.14);
+}
+
+.quickViewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.quickViewTitle {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: #242424;
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #242424;
+  font-size: 24px;
+  line-height: 32px;
+  cursor: pointer;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+}
+
+.quickViewContent {
+  padding: 4px 24px 24px;
+}
+
+.trainingItem {
+  padding: 20px 0;
+  border-bottom: 1px solid #e1e1e1;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.courseTitle {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 21px;
+  color: #242424;
+}
+
+.courseMessage {
+  margin: 6px 0 8px 28px;
+  font-size: 13px;
+  line-height: 19px;
+  color: #424242;
+}
+
+.dueDate,
+.dueDatePassed {
+  margin: 6px 0 12px 28px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.dueDate {
+  color: #424242;
+}
+
+.dueDatePassed {
+  color: #a4262c;
+}
+
+.trainingItem .actionLink {
+  margin-left: 28px;
 }
 
 @media (max-width: 480px) {
-  .header {
-    margin-bottom: 16px;
-  }
-
-  .title {
-    font-size: 22px;
-    line-height: 28px;
-  }
-
-  .titleLine {
-    width: 48px;
-    margin-left: 12px;
-  }
-
-  .card {
+  .myLearnings {
+    max-width: none;
     padding: 16px;
   }
 
-  .trainingTitle {
-    font-size: 16px;
-    line-height: 22px;
-  }
-
-  .description {
-    font-size: 14px;
-    line-height: 20px;
+  .quickView {
+    width: 100%;
   }
 
   .linkRow {
-    gap: 16px;
+    gap: 14px;
   }
 }

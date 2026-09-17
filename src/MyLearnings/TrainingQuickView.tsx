@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {
   Callout,
-  DirectionalHint
+  DirectionalHint,
+  IconButton
 } from '@fluentui/react';
 
 import styles from './MyLearnings.module.scss';
@@ -14,7 +15,6 @@ export interface ITrainingQuickViewProps {
   target: HTMLElement | null;
   items: IQuickViewItem[];
   mandatoryCourseCount: number;
-  title: string;
   description: string;
   onDismiss: () => void;
 }
@@ -30,71 +30,93 @@ const TrainingQuickView: React.FC<ITrainingQuickViewProps> = (props) => {
       gapSpace={8}
       className={styles.trainingQuickView}
     >
-      <div className={styles.quickViewContent}>
+      <div className={styles.quickViewContainer}>
 
-        <div className={styles.quickViewHeading}>
-          {props.title} ({props.mandatoryCourseCount})
+        <div className={styles.quickViewHeader}>
+          <div className={styles.quickViewHeaderTitle}>
+            Training
+          </div>
+
+          <IconButton
+            className={styles.quickViewCloseButton}
+            iconProps={{ iconName: 'Cancel' }}
+            ariaLabel="Close"
+            title="Close"
+            onClick={props.onDismiss}
+          />
         </div>
 
-        <div className={styles.quickViewDescription}>
-          {props.description}
-        </div>
+        <div className={styles.quickViewContent}>
 
-        <div className={styles.quickViewItems}>
+          <div className={styles.quickViewTitle}>
+            Mandatory Courses ({props.mandatoryCourseCount})
+          </div>
 
-          {props.items.map((item, index) => (
-            <div
-              key={`${item.trainingTitle}-${index}`}
-              className={styles.quickViewItem}
-            >
+          <div className={styles.quickViewDescription}>
+            {props.description}
+          </div>
 
-              <div className={styles.quickViewTrainingTitle}>
-                {item.trainingTitle}
-              </div>
+          <div className={styles.quickViewItems}>
 
-              <div className={styles.quickViewMessage}>
-                {item.message}
-              </div>
+            {props.items.map((item, index) => (
+              <div
+                key={`${item.trainingTitle}-${index}`}
+                className={styles.quickViewItem}
+              >
 
-              <div className={styles.quickViewFooter}>
+                <div className={styles.quickViewTrainingTitle}>
+                  {item.trainingTitle}
+                </div>
 
-                <div className={styles.quickViewDate}>
+                <div className={styles.quickViewMessage}>
+                  {item.message}
+                </div>
 
-                  <span
-                    className={
-                      item.dueDatePassed && !item.isDateWithin7Days
-                        ? styles.quickViewDateAttention
-                        : ''
-                    }
-                  >
-                    {item.trainingDateDisplayFormat}
-                  </span>
+                <div className={styles.quickViewFooter}>
 
-                  {(item.dueDatePassed || item.isDateWithin7Days) &&
-                    item.dueDateErrorIcon && (
-                      <img
-                        src={item.dueDateErrorIcon}
-                        className={styles.quickViewDateIcon}
-                        alt=""
-                        aria-hidden="true"
-                      />
-                    )}
+                  <div className={styles.quickViewDateRow}>
+
+                    <span
+                      className={
+                        item.dueDatePassed &&
+                        !item.isDateWithin7Days
+                          ? styles.quickViewDateAttention
+                          : styles.quickViewDate
+                      }
+                    >
+                      {item.trainingDateDisplayFormat}
+                    </span>
+
+                    {(item.dueDatePassed ||
+                      item.isDateWithin7Days) &&
+                      item.dueDateErrorIcon && (
+                        <img
+                          src={item.dueDateErrorIcon}
+                          className={styles.quickViewDateIcon}
+                          alt=""
+                          aria-hidden="true"
+                        />
+                      )}
+
+                  </div>
+
+                  {item.button && (
+                    <a
+                      href={item.button}
+                      className={styles.quickViewOpenButton}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {item.openButtonLabel}
+                    </a>
+                  )}
 
                 </div>
 
-                <a
-                  href={item.button}
-                  className={styles.quickViewOpenButton}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {item.openButtonLabel}
-                </a>
-
               </div>
+            ))}
 
-            </div>
-          ))}
+          </div>
 
         </div>
 

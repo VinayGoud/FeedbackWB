@@ -1,0 +1,133 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+stages:
+- stage: Build
+  displayName: 'Build SPFx Solution'
+
+  jobs:
+  - job: Build
+    displayName: 'Build'
+
+    steps:
+
+    - task: UseNode@1
+      displayName: 'Use Node.js 22.14.0'
+      inputs:
+        version: '22.14.0'
+
+    - script: |
+        node -v
+        npm -v
+      displayName: 'Check Versions'
+
+    - script: npm install
+      displayName: 'npm install'
+
+    - script: npx heft clean
+      displayName: 'heft clean'
+
+    - script: npx heft build --production
+      displayName: 'heft build --production'
+
+    - script: npx heft package-solution --production
+      displayName: 'heft package-solution --production'
+
+    - task: CopyFiles@2
+      displayName: 'Copy .sppkg to staging'
+      inputs:
+        SourceFolder: 'sharepoint/solution'
+        Contents: '**/*.sppkg'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        OverWrite: true
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive solution folder'
+      inputs:
+        rootFolderOrFile: 'sharepoint/solution'
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Build Artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+
+- stage: DeployUAT
+  displayName: 'Deploy to UAT'
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+  - job: DeployUAT
+    displayName: 'Deploy to UAT App Catalog'
+    variables:
+    - group: 'UAT-Deploy-Secrets'   # <-- rename to your actual Variable Group name
+
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
+    - task: DownloadSecureFile@1
+      name: uatCert
+      displayName: 'Download UAT certificate'
+      inputs:
+        secureFile: 'uat-cert.pfx'   # <-- rename to your actual Secure File name
+
+    - task: ExtractFiles@1
+      displayName: 'Extract files'
+      inputs:
+        destinationFolder: '$(System.ArtifactsDirectory)/release/'
+        archiveFilePatterns: '$(System.ArtifactsDirectory)/*.zip'
+
+    - task: PowerShell@2
+      displayName: 'Deploy package to UAT App Catalog'
+      inputs:
+        targetType: 'inline'
+        script: |
+
+          try {
+
+            Install-Module PnP.PowerShell -Force -Scope CurrentUser -Verbose
+
+            Write-Host "Copy 3M package"
+            md .\temp\package | Out-Null
+            get-childitem -Path "$($env:SYSTEM_ARTIFACTSDIRECTORY)" -Filter *.sppkg -Recurse | % {
+              Write-Host "Adding $($_.FullName)"
+              Copy-Item $_.FullName -Destination ".\temp\package"
+            }
+
+            Write-Host "Connecting to UAT tenant"
+            Write-Host $env:UATSITEURL
+            Connect-PnPOnline -Url $env:UATSITEURL -ClientId $env:UATCLIENTID -Tenant $env:UATTENANTID -CertificatePath $env:UATCERTPATH -CertificatePassword (ConvertTo-SecureString -String $env:UATCERTPASSWORD -AsPlainText -Force)
+
+            $tempPath = "./temp/package/"
+            $packageName = Get-ChildItem -Path $tempPath -Filter *.sppkg | Select-Object -First 1 -ExpandProperty Name
+            $packagePath = Join-Path -Path $tempPath -ChildPath $packageName
+
+            Write-Host "Adding package to app catalog"
+            Add-PnPApp -Path $packagePath -Publish -Overwrite
+            Write-Host "Package successfully Published"
+
+          }
+          catch {
+            $ErrorMessage = $_.Exception.Message
+            Write-Host "Error: " $ErrorMessage
+            rm -r .\temp
+          }
+      env:
+        UATSITEURL: $(UatSiteUrl)
+        UATCLIENTID: $(UatClientId)
+        UATTENANTID: $(UatTenantId)
+        UATCERTPATH: $(uatCert.secureFilePath)
+        UATCERTPASSWORD: $(UatCertPassword)
